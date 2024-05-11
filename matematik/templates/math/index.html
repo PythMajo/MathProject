@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Math{% endblock %}</h1>
+  {% if g.user %}
+    <a class="action" href="{{ url_for('blog.create') }}">New</a>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <h2 class="title">Content Page</h2>
+        <p>This is a sample content page created using Flask and Bulma CSS.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ullamcorper euismod magna ut fermentum. Nulla facilisi. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque eget vestibulum odio. Sed vitae orci quis magna faucibus aliquet. Vivamus ut interdum ex. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Vivamus sollicitudin tincidunt felis, non fermentum elit tincidunt ut. Vivamus sed tortor quam. Nulla lacinia ligula ac velit aliquam, eu tempor tortor egestas.</p>
+        <p>Phasellus vel tempor velit. Aliquam ultricies dolor justo, id laoreet justo efficitur at. Cras bibendum tortor id nibh tincidunt, ut tincidunt purus vehicula. Nulla euismod malesuada nisi a suscipit. Vestibulum euismod mauris sed nunc ullamcorper, in congue sem interdum. Pellentesque vehicula, sapien nec interdum feugiat, sapien eros aliquam magna, a tempor ipsum ligula eu odio. Mauris euismod tristique massa non eleifend. Proin id odio semper, rhoncus leo vel, feugiat tortor.</p>
+    </div>
+</section>
+{% endblock %}

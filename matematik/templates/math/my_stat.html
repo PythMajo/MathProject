@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div style="height: 50vh; width: 50%;">
+    <canvas id="myChart"></canvas>
+</div>
+{{ ratio }}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Extracting labels and data from the returned chart_data
+    const chartData = {{ my_score | tojson }};
+
+    // Extracting labels and data from chartData
+    const labels = chartData.map(item => item.day_created);
+    const data = chartData.map(item => item.count);
+
+    const config = {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Correct ansers',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: data,
+            }]
+        },
+        options: { maintainAspectRatio: false }
+    };
+
+    const myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+
+</script>
+
+
+
+{% endblock %}

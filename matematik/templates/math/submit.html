@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1 class="title is-1">{% block title %}Math{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+
+
+    <form method="POST" action="{{ url_for('math.submit') }}">
+    {{ form.csrf_token }}
+    <table class="table is-fullwidth is-striped">
+        <thead>
+            <tr>
+                <th>Option</th>
+                <th>Select</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for field in form if field.name != 'csrf_token' and field.type != 'SubmitField' %}
+            <tr>
+                <td>{{ field.label }}</td>
+                <td>{{ field }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+            <div class="field">
+            <div class="control">
+                {{ form.submit(class="button is-primary") }}
+            </div>
+        </div>
+</form>
+
+
+
+{% endblock %}
