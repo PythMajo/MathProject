@@ -9,6 +9,7 @@ class QuerySelectMultipleFieldWithCheckboxes(QuerySelectMultipleField):
 
 
 class SettingsOperatorsForm(FlaskForm):
+    #TODO: add more fields
     operators = QuerySelectMultipleFieldWithCheckboxes("Operators")
 
 # class SettingsForm(FlaskForm):

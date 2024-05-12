@@ -12,6 +12,7 @@
             <div class="control">
               <div class="select is-multiple is-small">
                 <select name="operators" multiple size="{{ form.operators.query|length }}">
+{#                TODO: Change to switch - https://wikiki.github.io/form/switch/#}
                   {% for operator in form.operators.query %}
                   <option value="{{ operator.id }}" {% if operator in form.operators.data %} selected {% endif %}>
                     {{ operator.name }}

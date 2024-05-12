@@ -1,6 +1,4 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
 from matematik import db
 from flask_sqlalchemy import SQLAlchemy
 
