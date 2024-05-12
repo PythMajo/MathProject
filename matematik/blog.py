@@ -4,7 +4,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 from matematik.auth import login_required
-from matematik.db import get_db
+
 
 
 bp = Blueprint('blog', __name__)
