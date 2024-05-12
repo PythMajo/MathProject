@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h1 class="title is-1">{% block title %}Math{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<form method="POST">
+          {{ form.csrf_token }}
+          <div class="field">
+            <label class="label">Select operators:</label>
+            <div class="control">
+              <div class="select is-multiple is-small">
+                <select name="operators" multiple size="{{ form.operators.query|length }}">
+                  {% for operator in form.operators.query %}
+                  <option value="{{ operator.id }}" {% if operator in form.operators.data %} selected {% endif %}>
+                    {{ operator.name }}
+                  </option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <button type="submit" class="button is-primary">Save Settings</button>
+            </div>
+          </div>
+        </form>
+
+{% endblock %}

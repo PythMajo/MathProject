@@ -7,17 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 # Create an instance of SQLAlchemy
 
 
-
-class User(db.Model):
-    __tablename__ = 'user'
-    id = Column(Integer, primary_key=True)
-    username = Column(String(50), unique=True, nullable=False)
-    password = Column(String, nullable=False)
-    posts = relationship('Post', backref='author', lazy=True)
-    answers = relationship('Answer', backref='author', lazy=True)
-    options = relationship('UserOptions', backref='user', uselist=False, lazy=True)
-
-
 class Post(db.Model):
     __tablename__ = 'post'
     id = Column(Integer, primary_key=True)
@@ -43,3 +32,30 @@ class UserOptions(db.Model):
     operator_plus_option = Column(Boolean, nullable=False)
     operator_minus_option = Column(Boolean)
     operator_multiply_option = Column(Boolean)
+
+# Define the association table for many-to-many relationship
+users_settings_operators = db.Table(
+    'users_settings_operators',
+    db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
+    db.Column('settings_operator_id', Integer, ForeignKey('settings_operators.id'), primary_key=True)
+)
+
+# Define User class
+class User(db.Model):
+    __tablename__ = 'user'
+    id = db.Column(Integer, primary_key=True)
+    username = db.Column(String(50), unique=True, nullable=False)
+    password = db.Column(String, nullable=False)
+    posts = db.relationship('Post', backref='author', lazy=True)
+    answers = db.relationship('Answer', backref='author', lazy=True)
+    options = db.relationship('UserOptions', backref='user', uselist=False, lazy=True)
+    settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
+
+# Define SettingsOperators class
+class SettingsOperators(db.Model):
+    __tablename__ = 'settings_operators'
+    id = db.Column(Integer, primary_key=True)
+    name = db.Column(String(100))
+
+    def __str__(self):
+        return self.name
