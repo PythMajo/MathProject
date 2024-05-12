@@ -121,7 +121,7 @@ def solve_problem():
 @login_required
 def user_settings():
     user = User.query.get(g.user.id)
-    form = SettingsOperatorsForm(data={"choices": user.settings_operators})
+    form = SettingsOperatorsForm(data={"operators": user.settings_operators})
     form.operators.query = SettingsOperators.query.all()
 
     if form.validate_on_submit():
