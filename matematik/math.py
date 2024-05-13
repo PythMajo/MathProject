@@ -1,7 +1,10 @@
+from typing import Any
+
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
-from sqlalchemy import func
+from sqlalchemy import func, and_
+
 from werkzeug.exceptions import abort
 from matematik.auth import login_required
 from matematik.models import User, Answer, UserOptions, SettingsOperators
@@ -11,6 +14,18 @@ from .forms import SettingsOperatorsForm
 
 
 bp = Blueprint('math', __name__, url_prefix='/math')
+
+
+def get_progress_for_user(user_id: int) -> int:
+    correct_answers = Answer.query.filter(
+        and_(
+            Answer.author_id == user_id,
+            Answer.user_answer == True  # Assuming True indicates a correct answer
+        )
+    ).count()
+
+    progress: int | Any = correct_answers % 10
+    return progress
 
 
 def generate_math_problem():
@@ -72,8 +87,9 @@ def my_stat():
 @login_required
 def solve_problem():
     if request.method == 'GET':
+        correct_answers = get_progress_for_user(g.user.id)
         math_problem = generate_math_problem()
-        return render_template('math/solve_problem.html', math_problem=math_problem)
+        return render_template('math/solve_problem.html', math_problem=math_problem, correct_answers=correct_answers)
 
     elif request.method == 'POST':
         user_answer = int(request.form['user_answer'])
@@ -96,25 +112,6 @@ def solve_problem():
             db.session.add(new_answer)
             db.session.commit()
         return redirect(url_for('math.solve_problem'))
-
-
-# @bp.route('/submit', methods=['GET', 'POST'])
-# @login_required
-# def submit():
-#     form = SettingsForm(plus_option=False)
-#     if form.validate_on_submit():
-#         user_options = UserOptions.query.filter_by(author_id=g.user.id).first()
-#         if user_options:
-#             user_options.operator_plus_option = form.plus_option.data
-#         else:
-#             user_options = UserOptions(author_id=g.user.id, operator_plus_option=form.plus_option.data)
-#         db.session.add(user_options)
-#         db.session.commit()
-#         return redirect(url_for('math.solve_problem'))
-#     user_options = UserOptions.query.filter_by(author_id=g.user.id).first()
-#     if user_options:
-#         form.set_defaults(user_options)
-#     return render_template('math/submit.html', form=form)
 
 
 @bp.route('/settings', methods=['GET', 'POST'])
