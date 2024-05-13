@@ -7,9 +7,9 @@ from sqlalchemy import func, and_
 
 from werkzeug.exceptions import abort
 from matematik.auth import login_required
-from matematik.models import User, Answer, UserOptions, SettingsOperators
+from matematik.models import User, Answer, UserOptions, SettingsOperators, CollectableItems, users_collectable_items
 from matematik import db
-import random
+from random import randint, choice
 from .forms import SettingsOperatorsForm
 
 
@@ -20,7 +20,7 @@ def get_progress_for_user(user_id: int) -> int:
     correct_answers = Answer.query.filter(
         and_(
             Answer.author_id == user_id,
-            Answer.user_answer == True  # Assuming True indicates a correct answer
+            Answer.user_answer == True
         )
     ).count()
 
@@ -28,13 +28,16 @@ def get_progress_for_user(user_id: int) -> int:
     return progress
 
 
+
+
+
 def generate_math_problem():
     # Generate two random numbers between 1 and 10
-    num1 = random.randint(1, 10)
-    num2 = random.randint(1, 10)
+    num1 = randint(1, 10)
+    num2 = randint(1, 10)
 
     # Choose a random operation (+, -, *)
-    operator = random.choice(['+', '-'])
+    operator = choice(['+', '-'])
 
     # Calculate the correct answer
     if operator == '+':
@@ -83,6 +86,18 @@ def my_stat():
     return render_template('math/my_stat.html', my_stat=my_stat, ratio=ratio)
 
 
+@bp.route('/my_collection', methods=['GET'])
+@login_required
+def my_collection():
+    # Assuming g.user.id contains the ID of the current user
+    user = User.query.get(g.user.id)
+    collection = [item.fa_code for item in user.collection]
+
+    return render_template('math/my_collection.html', my_collection=collection)
+
+
+
+
 @bp.route('/solve_problem', methods=['GET', 'POST'])
 @login_required
 def solve_problem():
@@ -104,6 +119,43 @@ def solve_problem():
         if user_answer == correct_answer:
             flash('Correct!', 'success')
             new_answer = Answer(problem=problem, user_answer=True, author_id=g.user.id)
+
+            #check if new items i needed
+            if get_progress_for_user(g.user.id) == 9:
+                flash('New item in collection', 'warning')
+
+                user_id = g.user.id
+                # Query collectable items not already in the user's collection
+                not_owned_items_query = (
+                    CollectableItems.query
+                        .filter(~CollectableItems.users.any(id=user_id))
+                # Exclude items already in the user's collection
+                )
+
+                # Get the count of collectable items not owned by the user
+                not_owned_items_count = not_owned_items_query.count()
+
+                # If there are no collectable items not owned by the user, exit or handle the situation accordingly
+                if not_owned_items_count == 0:
+                    # Handle the case where there are no collectable items not owned by the user
+                    # For example, return an error message or take appropriate action
+                    #FIXME
+                    print("No collectable items available.")
+                    exit()
+
+                # Randomly select a collectable item not owned by the user
+                random_collectable_item = not_owned_items_query.offset(randint(0, not_owned_items_count - 1)).first()
+
+                # Associate the random collectable item with the user
+                new_association = users_collectable_items.insert().values(user_id=user_id,
+                                                                          collectable_items_id=random_collectable_item.id)
+
+                # Insert the association into the users_collectable_items table using the existing db.session()
+                db.session.execute(new_association)
+
+                # Commit the transaction
+                db.session.commit()
+
             db.session.add(new_answer)
             db.session.commit()
         else:

@@ -38,6 +38,12 @@ users_settings_operators = db.Table(
     db.Column('settings_operator_id', Integer, ForeignKey('settings_operators.id'), primary_key=True)
 )
 
+users_collectable_items = db.Table(
+    'users_collectable_items',
+    db.Column('user_id', Integer, ForeignKey('user.id'), primary_key=True),
+    db.Column('collectable_items_id', Integer, ForeignKey('collectable_items.id'), primary_key=True)
+)
+
 # Define User class
 class User(db.Model):
     __tablename__ = 'user'
@@ -46,8 +52,11 @@ class User(db.Model):
     password = db.Column(String, nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
-    options = db.relationship('UserOptions', backref='user', uselist=False, lazy=True)
+    options = db.relationship('UserOptions', backref='user', uselist=False, lazy=True) #TODO remove
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
+    collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
+
+
 
 # Define SettingsOperators class
 class SettingsOperators(db.Model):
@@ -57,3 +66,10 @@ class SettingsOperators(db.Model):
 
     def __str__(self):
         return self.name
+
+
+class CollectableItems(db.Model):
+    __tablename__ = 'collectable_items'
+    id = db.Column(Integer, primary_key=True)
+    fa_code = db.Column(String(100))
+

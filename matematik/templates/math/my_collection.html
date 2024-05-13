@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+<div class="grid">
+<div class="column">
+    {% for item in my_collection %}
+        <span class="icon is-large">
+
+            <i class="{{ item }} fa-2xl"></i>
+
+        </span>
+
+
+    {% endfor %}
+</div>
+</div>
+{% endblock %}
