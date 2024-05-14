@@ -7,8 +7,8 @@ from sqlalchemy import func, and_
 
 from werkzeug.exceptions import abort
 from matematik.auth import login_required
-from matematik.models import User, Answer, UserOptions, SettingsOperators, CollectableItems, users_collectable_items
-from matematik import db
+from .models import User, Answer, UserOptions, SettingsOperators, CollectableItems, users_collectable_items
+from . import db
 from random import randint, choice
 from .forms import SettingsOperatorsForm
 
@@ -39,13 +39,11 @@ def generate_math_problem():
     # Choose a random operation (+, -, *)
     operator = choice(['+', '-'])
 
+
+
     # Calculate the correct answer
-    if operator == '+':
-        answer = num1 + num2
-    elif operator == '-':
-        answer = num1 - num2
-    else:
-        answer = num1 * num2
+
+    answer = eval(str(num1)+operator + str(num2))
 
     # Return the problem as a dictionary
     return {

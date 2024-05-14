@@ -1,5 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, TIMESTAMP, ForeignKey
-from matematik import db
+from . import db
+
+from sqlalchemy.sql import func
 from flask_sqlalchemy import SQLAlchemy
 
 # Create an instance of SQLAlchemy
@@ -18,7 +20,7 @@ class Answer(db.Model):
     __tablename__ = 'answers'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    created = Column(TIMESTAMP, nullable=False, server_default='CURRENT_TIMESTAMP')
+    created = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
     problem = Column(String, nullable=False)
     user_answer = Column(Boolean, nullable=False)
 
@@ -52,7 +54,6 @@ class User(db.Model):
     password = db.Column(String, nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
-    options = db.relationship('UserOptions', backref='user', uselist=False, lazy=True) #TODO remove
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
     collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
 
