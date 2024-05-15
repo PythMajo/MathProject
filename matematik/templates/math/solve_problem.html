@@ -7,15 +7,7 @@
 {% block content %}
 
 <progress class="progress is-warning" value="{{ correct_answers }}" max="10">{{ correct_answers }}</progress>
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="notification is-{{ category }}">
-                    {{ message }} 
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+
 
 
     <h1 class="title">Løs opgaven</h1>
@@ -45,7 +37,15 @@
   </div>
 
   <div class="column">
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="notification is-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
   </div>
 </div>
 

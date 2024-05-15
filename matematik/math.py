@@ -12,7 +12,6 @@ from . import db
 from random import randint, choice
 from .forms import SettingsOperatorsForm
 
-
 bp = Blueprint('math', __name__, url_prefix='/math')
 
 
@@ -28,22 +27,21 @@ def get_progress_for_user(user_id: int) -> int:
     return progress
 
 
+def generate_math_problem(user_id: int):
 
+    settings_operators = [operator.operator for operator in
+                          User.query.filter_by(id=user_id).first().settings_operators]
 
-
-def generate_math_problem():
     # Generate two random numbers between 1 and 10
     num1 = randint(1, 10)
     num2 = randint(1, 10)
 
     # Choose a random operation (+, -, *)
-    operator = choice(['+', '-'])
-
-
+    operator = choice(settings_operators)
 
     # Calculate the correct answer
 
-    answer = eval(str(num1)+operator + str(num2))
+    answer = eval(str(num1) + operator + str(num2))
 
     # Return the problem as a dictionary
     return {
@@ -56,7 +54,7 @@ def generate_math_problem():
 
 @bp.route('/')
 def index():
-    return render_template('math/index.html')
+    return redirect(url_for('math.solve_problem'))
 
 
 def get_chart_data(user_id):
@@ -94,14 +92,12 @@ def my_collection():
     return render_template('math/my_collection.html', my_collection=collection)
 
 
-
-
 @bp.route('/solve_problem', methods=['GET', 'POST'])
 @login_required
 def solve_problem():
     if request.method == 'GET':
         correct_answers = get_progress_for_user(g.user.id)
-        math_problem = generate_math_problem()
+        math_problem = generate_math_problem(g.user.id)
         return render_template('math/solve_problem.html', math_problem=math_problem, correct_answers=correct_answers)
 
     elif request.method == 'POST':
@@ -114,53 +110,53 @@ def solve_problem():
         }
         problem = f"{math_problem['num1']} {math_problem['operator']} {math_problem['num2']}"
         correct_answer = eval(problem)
-        if user_answer == correct_answer:
-            flash('Correct!', 'success')
-            new_answer = Answer(problem=problem, user_answer=True, author_id=g.user.id)
 
-            #check if new items i needed
-            if get_progress_for_user(g.user.id) == 9:
-                flash('New item in collection', 'warning')
+        user_answer_correct = user_answer == correct_answer
 
-                user_id = g.user.id
-                # Query collectable items not already in the user's collection
-                not_owned_items_query = (
-                    CollectableItems.query
-                        .filter(~CollectableItems.users.any(id=user_id))
+        if get_progress_for_user(g.user.id) == 9 and user_answer_correct:
+            flash('Correct!\nNew item in collection', 'warning')
+
+            user_id = g.user.id
+            # Query collectable items not already in the user's collection
+            not_owned_items_query = (
+                CollectableItems.query
+                    .filter(~CollectableItems.users.any(id=user_id))
                 # Exclude items already in the user's collection
-                )
+            )
 
-                # Get the count of collectable items not owned by the user
-                not_owned_items_count = not_owned_items_query.count()
+            # Get the count of collectable items not owned by the user
+            not_owned_items_count = not_owned_items_query.count()
 
-                # If there are no collectable items not owned by the user, exit or handle the situation accordingly
-                if not_owned_items_count == 0:
-                    # Handle the case where there are no collectable items not owned by the user
-                    # For example, return an error message or take appropriate action
-                    #FIXME
-                    print("No collectable items available.")
-                    exit()
+            # If there are no collectable items not owned by the user, exit or handle the situation accordingly
+            if not_owned_items_count == 0:
+                # Handle the case where there are no collectable items not owned by the user
+                # For example, return an error message or take appropriate action
+                # FIXME
+                print("No collectable items available.")
+                exit()
 
-                # Randomly select a collectable item not owned by the user
-                random_collectable_item = not_owned_items_query.offset(randint(0, not_owned_items_count - 1)).first()
+            # Randomly select a collectable item not owned by the user
+            random_collectable_item = not_owned_items_query.offset(randint(0, not_owned_items_count - 1)).first()
 
-                # Associate the random collectable item with the user
-                new_association = users_collectable_items.insert().values(user_id=user_id,
-                                                                          collectable_items_id=random_collectable_item.id)
+            # Associate the random collectable item with the user
+            new_association = users_collectable_items.insert().values(user_id=user_id,
+                                                                      collectable_items_id=random_collectable_item.id)
 
-                # Insert the association into the users_collectable_items table using the existing db.session()
-                db.session.execute(new_association)
+            # Insert the association into the users_collectable_items table using the existing db.session()
+            db.session.execute(new_association)
 
-                # Commit the transaction
-                db.session.commit()
-
-            db.session.add(new_answer)
+            # Commit the transaction
             db.session.commit()
+
+        elif user_answer == correct_answer:
+            flash('Correct!', 'success')
         else:
             flash('Incorrect. Try again.', 'danger')
-            new_answer = Answer(problem=problem, user_answer=False, author_id=g.user.id)
-            db.session.add(new_answer)
-            db.session.commit()
+
+        new_answer = Answer(problem=problem, user_answer=user_answer_correct, author_id=g.user.id)
+        db.session.add(new_answer)
+        db.session.commit()
+
         return redirect(url_for('math.solve_problem'))
 
 
@@ -177,4 +173,3 @@ def user_settings():
         db.session.commit()
 
     return render_template("math/settings.html", form=form)
-

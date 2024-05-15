@@ -64,6 +64,7 @@ class SettingsOperators(db.Model):
     __tablename__ = 'settings_operators'
     id = db.Column(Integer, primary_key=True)
     name = db.Column(String(100))
+    operator = db.Column(String(2))
 
     def __str__(self):
         return self.name
