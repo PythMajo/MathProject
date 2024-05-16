@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms_alchemy import QuerySelectMultipleField
+from wtforms_alchemy import QuerySelectMultipleField, QuerySelectField
 from wtforms import widgets
+from matematik.models import SettingsLevel
 
 
 class QuerySelectMultipleFieldWithCheckboxes(QuerySelectMultipleField):
@@ -11,6 +12,8 @@ class QuerySelectMultipleFieldWithCheckboxes(QuerySelectMultipleField):
 class SettingsOperatorsForm(FlaskForm):
     #TODO: add more fields
     operators = QuerySelectMultipleFieldWithCheckboxes("Operators")
+    settings_level = QuerySelectField("Settings Level", query_factory=lambda: SettingsLevel.query.all(),
+                                      get_label="name")
 
 # class SettingsForm(FlaskForm):
 #     plus_option = BooleanField('Plus', default=True)

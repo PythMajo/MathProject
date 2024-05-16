@@ -7,7 +7,7 @@ from sqlalchemy import func, and_
 
 from werkzeug.exceptions import abort
 from matematik.auth import login_required
-from .models import User, Answer, UserOptions, SettingsOperators, CollectableItems, users_collectable_items
+from .models import User, Answer, SettingsLevel, SettingsOperators, CollectableItems, users_collectable_items
 from . import db
 from random import randint, choice
 from .forms import SettingsOperatorsForm
@@ -28,9 +28,12 @@ def get_progress_for_user(user_id: int) -> int:
 
 
 def generate_math_problem(user_id: int):
-
-    settings_operators = [operator.operator for operator in
-                          User.query.filter_by(id=user_id).first().settings_operators]
+    #TODO: Ret så nye brugere får default settings
+    #settings_operators = [operator.operator for operator in
+    #                      User.query.filter_by(id=user_id).first().settings_operators]
+    user = User.query.filter_by(id=user_id).first()
+    settings_operators = [operator.operator for operator in user.settings_operators]
+    settings_level = user.settings_level
 
     # Generate two random numbers between 1 and 10
     num1 = randint(1, 10)
@@ -164,12 +167,18 @@ def solve_problem():
 @login_required
 def user_settings():
     user = User.query.get(g.user.id)
-    form = SettingsOperatorsForm(data={"operators": user.settings_operators})
+
+    form = SettingsOperatorsForm(data={
+        "operators": user.settings_operators,
+        "settings_level": user.settings_level_id
+    })
     form.operators.query = SettingsOperators.query.all()
+    form.settings_level.query = SettingsLevel.query.all()
 
     if form.validate_on_submit():
         user.settings_operators.clear()
         user.settings_operators.extend(form.operators.data)
+        user.settings_level = form.settings_level.data
         db.session.commit()
 
     return render_template("math/settings.html", form=form)
