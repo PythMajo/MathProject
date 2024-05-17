@@ -5,6 +5,8 @@ from flask import (
 )
 from sqlalchemy import func, and_
 
+from markupsafe import Markup
+
 from werkzeug.exceptions import abort
 from matematik.auth import login_required
 from .models import User, Answer, SettingsLevel, SettingsOperators, CollectableItems, users_collectable_items
@@ -33,7 +35,7 @@ def generate_math_problem(user_id: int):
     #                      User.query.filter_by(id=user_id).first().settings_operators]
     user = User.query.filter_by(id=user_id).first()
     settings_operators = [operator.operator for operator in user.settings_operators]
-    settings_level = user.settings_level
+    settings_level = user.settings_level_id
 
     # Generate two random numbers between 1 and 10
     num1 = randint(1, 10)
@@ -117,7 +119,6 @@ def solve_problem():
         user_answer_correct = user_answer == correct_answer
 
         if get_progress_for_user(g.user.id) == 9 and user_answer_correct:
-            flash('Correct!\nNew item in collection', 'warning')
 
             user_id = g.user.id
             # Query collectable items not already in the user's collection
@@ -150,6 +151,8 @@ def solve_problem():
 
             # Commit the transaction
             db.session.commit()
+            message = Markup(f'Correct!\nNew item in collection:  <span class="icon"><i class="{ random_collectable_item.fa_code } fa-xl"></i></span>')
+            flash(message, 'warning')
 
         elif user_answer == correct_answer:
             flash('Correct!', 'success')
