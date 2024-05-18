@@ -32,6 +32,7 @@ def register():
             # Add the default settings operator association
             default_operator = SettingsOperators.query.get(1)
             new_user.settings_operators.append(default_operator)
+            new_user.settings_level_id = 1
             db.session.commit()
             return redirect(url_for("auth.login"))
 

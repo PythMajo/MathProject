@@ -57,10 +57,8 @@ class User(db.Model):
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
-    #settings_level = db.relationship('SettingsLevel', secondary='users_settings_level', backref=db.backref('users', lazy='dynamic'))
     collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
-    settings_level_id = db.Column(db.Integer, db.ForeignKey('settings_level.id'))  # Change to foreign key
-    #settings_level = db.relationship('SettingsLevel')  # Remove secondary relationship
+    settings_level_id = db.Column(db.Integer, db.ForeignKey('settings_level.id'))
 
 
 # Define SettingsOperators class

@@ -15,12 +15,10 @@
 
     <div class="columns">
       <div class="column">
-    <p class="has-text-weight-bold">Hvad er {{ math_problem.num1 }} {{ math_problem.operator }} {{ math_problem.num2 }}?</p>
+    <p class="has-text-weight-bold">Hvad er {{ math_problem }}?</p>
     <form action="{{ url_for('math.solve_problem') }}" method="post">
-        <input type="hidden" name="num1" value="{{ math_problem.num1 }}">
-        <input type="hidden" name="num2" value="{{ math_problem.num2 }}">
-        <input type="hidden" name="operator" value="{{ math_problem.operator }}">
-        <input type="hidden" name="answer" value="{{ math_problem.answer }}">
+        <input type="hidden" name="expression" value="{{ math_problem }}">
+
 
         <div class="field has-addons">
             <div class="control">

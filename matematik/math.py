@@ -29,32 +29,51 @@ def get_progress_for_user(user_id: int) -> int:
     return progress
 
 
+def generate_expression(level: int, operators: list = ['+', '-', '*']) -> str:
+    # Define difficulty settings based on the level
+    if level == 1:  # Easy
+        num_terms = 2
+        max_value = 10  # Default smaller numbers
+    elif level == 2:  # Medium
+        num_terms = randint(2, 3)
+        max_value = 20  # Medium range numbers
+    elif level == 3:  # Hard
+        num_terms = randint(2, 4)
+        max_value = 50  # Larger numbers
+    else:
+        raise ValueError("Level must be 1 (easy), 2 (medium), or 3 (hard)")
+
+    # Adjust max value for specific operators in level 1
+    if level == 1 and '+' in operators and len(operators) == 1:
+        max_value = 20
+
+    # Generate operands and operators
+    operands = [randint(1, max_value) for _ in range(num_terms)]
+
+    # Ensure positive results for subtraction in level 1
+    if level == 1 and '-' in operators and len(operators) == 1:
+        operands.sort(reverse=True)  # Ensure the first operand is greater
+        operator = choice(operators)
+        if operands[0] < operands[1]:  # If the first operand is smaller than the second
+            operands[0], operands[1] = operands[1], operands[0]  # Swap them
+
+    # Generate a list of random operators
+    selected_operators = [choice(operators) for _ in range(num_terms - 1)]
+
+    # Combine operands and operators to form the expression
+    expression_parts = [f"{operands[i]} {selected_operators[i]}" for i in range(num_terms - 1)]
+    expression_parts.append(str(operands[-1]))
+
+    return ' '.join(expression_parts)
+
+
 def generate_math_problem(user_id: int):
-    #TODO: Ret så nye brugere får default settings
-    #settings_operators = [operator.operator for operator in
-    #                      User.query.filter_by(id=user_id).first().settings_operators]
     user = User.query.filter_by(id=user_id).first()
     settings_operators = [operator.operator for operator in user.settings_operators]
     settings_level = user.settings_level_id
 
-    # Generate two random numbers between 1 and 10
-    num1 = randint(1, 10)
-    num2 = randint(1, 10)
-
-    # Choose a random operation (+, -, *)
-    operator = choice(settings_operators)
-
-    # Calculate the correct answer
-
-    answer = eval(str(num1) + operator + str(num2))
-
-    # Return the problem as a dictionary
-    return {
-        'num1': num1,
-        'num2': num2,
-        'operator': operator,
-        'answer': answer
-    }
+    math_problem = generate_expression(level=settings_level, operators=settings_operators)
+    return math_problem
 
 
 @bp.route('/')
@@ -107,15 +126,11 @@ def solve_problem():
 
     elif request.method == 'POST':
         user_answer = int(request.form['user_answer'])
-        math_problem = {
-            'num1': int(request.form['num1']),
-            'num2': int(request.form['num2']),
-            'operator': request.form['operator'],
-            'answer': int(request.form['answer'])
-        }
-        problem = f"{math_problem['num1']} {math_problem['operator']} {math_problem['num2']}"
-        correct_answer = eval(problem)
+        expression = str(request.form['expression'])
 
+        correct_answer = eval(expression)
+
+        # check for correct awnser
         user_answer_correct = user_answer == correct_answer
 
         if get_progress_for_user(g.user.id) == 9 and user_answer_correct:
@@ -160,7 +175,7 @@ def solve_problem():
         else:
             flash(Markup('<i class="fa fa-times" aria-hidden="true"></i> Ikke rigtigt, prøv en ny <i class="fa fa-smile-o" aria-hidden="true"></i> '), 'danger')
 
-        new_answer = Answer(problem=problem, user_answer=user_answer_correct, author_id=g.user.id)
+        new_answer = Answer(problem=expression, user_answer=user_answer_correct, author_id=g.user.id)
         db.session.add(new_answer)
         db.session.commit()
 
@@ -184,5 +199,9 @@ def user_settings():
         user.settings_operators.extend(form.operators.data)
         user.settings_level_id = form.settings_level.data.id
         db.session.commit()
+
+    # Set initial data after form submission
+    form.operators.data = user.settings_operators
+    form.settings_level.data = user.settings_level_id
 
     return render_template("math/settings.html", form=form)
