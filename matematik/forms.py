@@ -12,8 +12,7 @@ class QuerySelectMultipleFieldWithCheckboxes(QuerySelectMultipleField):
 class SettingsOperatorsForm(FlaskForm):
     #TODO: add more fields
     operators = QuerySelectMultipleFieldWithCheckboxes("Operators")
-    settings_level = QuerySelectField("Settings Level", query_factory=lambda: SettingsLevel.query.all(),
-                                      get_label="name")
+    settings_level = QuerySelectField('Settings Level', get_pk=lambda x: x.id, get_label='name')
 
 # class SettingsForm(FlaskForm):
 #     plus_option = BooleanField('Plus', default=True)

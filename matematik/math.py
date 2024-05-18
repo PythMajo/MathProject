@@ -155,9 +155,10 @@ def solve_problem():
             flash(message, 'warning')
 
         elif user_answer == correct_answer:
-            flash('Correct!', 'success')
+            message = Markup('<i class="fa fa-check" aria-hidden="true"></i> Rigtigt!')
+            flash(message, 'success')
         else:
-            flash('Incorrect. Try again.', 'danger')
+            flash(Markup('<i class="fa fa-times" aria-hidden="true"></i> Ikke rigtigt, prøv en ny <i class="fa fa-smile-o" aria-hidden="true"></i> '), 'danger')
 
         new_answer = Answer(problem=problem, user_answer=user_answer_correct, author_id=g.user.id)
         db.session.add(new_answer)
@@ -181,7 +182,7 @@ def user_settings():
     if form.validate_on_submit():
         user.settings_operators.clear()
         user.settings_operators.extend(form.operators.data)
-        user.settings_level = form.settings_level.data
+        user.settings_level_id = form.settings_level.data.id
         db.session.commit()
 
     return render_template("math/settings.html", form=form)

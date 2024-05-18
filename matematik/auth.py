@@ -4,7 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from matematik.models import User
+from matematik.models import User, SettingsOperators
 from matematik import db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -25,8 +25,13 @@ def register():
             error = f"User {username} is already registered."
 
         if error is None:
-            new_user = User(username=username, password=generate_password_hash(password))
+            new_user = User(username=username, password=generate_password_hash(password), settings_level_id=1)
             db.session.add(new_user)
+            db.session.commit()
+
+            # Add the default settings operator association
+            default_operator = SettingsOperators.query.get(1)
+            new_user.settings_operators.append(default_operator)
             db.session.commit()
             return redirect(url_for("auth.login"))
 
@@ -51,7 +56,7 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user.id
-            return redirect(url_for('index'))
+            return redirect(url_for('math.index'))
 
         flash(error)
 
@@ -71,7 +76,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('index'))
+    return redirect(url_for('math.index'))
 
 
 def login_required(view):
