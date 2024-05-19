@@ -3,7 +3,6 @@ from . import db
 from datetime import datetime
 
 from sqlalchemy.sql import func
-from flask_sqlalchemy import SQLAlchemy
 
 # Create an instance of SQLAlchemy
 class Post(db.Model):
