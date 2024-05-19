@@ -58,6 +58,7 @@ class User(db.Model):
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
     collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
     settings_level_id = db.Column(db.Integer, db.ForeignKey('settings_level.id'))
+    created = Column(TIMESTAMP, nullable=True, server_default=func.current_timestamp())
 
 
 # Define SettingsOperators class
