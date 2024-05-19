@@ -3,7 +3,8 @@ from typing import Any
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for
 )
-from sqlalchemy import func, and_
+from sqlalchemy import func, and_, desc, select, join, asc
+from sqlalchemy.orm import aliased
 
 from markupsafe import Markup
 
@@ -15,6 +16,26 @@ from random import randint, choice
 from .forms import SettingsOperatorsForm
 
 bp = Blueprint('math', __name__, url_prefix='/math')
+
+
+def get_sorted_collectable_items(user_id):
+    # Aliases for the tables
+    collectable_item_alias = aliased(CollectableItems)
+    user_collectable_item_alias = aliased(users_collectable_items)
+
+    # Create a join between users_collectable_items and collectable_items
+    join_stmt = join(user_collectable_item_alias, collectable_item_alias,
+                     user_collectable_item_alias.c.collectable_items_id == collectable_item_alias.id)
+
+    # Select the collectable items for the given user, sorted by timestamp
+    stmt = select(collectable_item_alias).select_from(join_stmt).where(
+        user_collectable_item_alias.c.user_id == user_id
+    ).order_by(asc(user_collectable_item_alias.c.timestamp))
+
+    # Execute the query
+    result = db.session.execute(stmt).scalars().all()
+
+    return result
 
 
 def get_progress_for_user(user_id: int) -> int:
@@ -111,7 +132,8 @@ def my_stat():
 def my_collection():
     # Assuming g.user.id contains the ID of the current user
     user = User.query.get(g.user.id)
-    collection = [item.fa_code for item in user.collection]
+    #collection = user.collection
+    collection = get_sorted_collectable_items(g.user.id)
 
     return render_template('math/my_collection.html', my_collection=collection)
 

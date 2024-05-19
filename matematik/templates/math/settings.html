@@ -29,6 +29,7 @@
             <label class="label">Select settings level:</label>
             <div class="control">
                 <div class="select is-small">
+
                     <select name="settings_level" style="width: 200px;">
                         {% for level in form.settings_level.query %}
                             <option value="{{ level.id }}"
@@ -39,7 +40,7 @@
                     </select>
                 </div>
             </div>
-        </div
+        </div>
         <div class="field">
             <div class="control">
                 <button type="submit" class="button is-primary">Save Settings</button>

@@ -85,4 +85,5 @@ class CollectableItems(db.Model):
     __tablename__ = 'collectable_items'
     id = db.Column(Integer, primary_key=True)
     fa_code = db.Column(String(100))
+    color = db.Column(String(100))
 
