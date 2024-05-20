@@ -4,8 +4,6 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
-#from .models import CollectableItems, SettingsOperators, SettingsLevel  # Ensure models are imported
-
 from sqlalchemy import MetaData
 
 # fixes ValueError: Constraint must have a name
@@ -17,9 +15,9 @@ convention = {
   "pk": "pk_%(table_name)s"
 }
 
-#db = SQLAlchemy()
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 migrate = Migrate(compare_type=True)
+
 
 def create_app(test_config=None):
     # Create and configure the app
@@ -62,6 +60,14 @@ def create_app(test_config=None):
     app.register_blueprint(math.bp)
     app.add_url_rule('/', endpoint='index')
 
+    # Register custom CLI command
+    @app.cli.command("clear_and_fill_tables")
+    def clear_and_fill_tables_command():
+
+        clear_and_fill_tables(app)
+        print("Tables have been cleared and filled with initial data.")
+
+
 
     # A simple page that says hello
     @app.route('/hello')
@@ -69,6 +75,7 @@ def create_app(test_config=None):
         return 'Hello, World!'
 
     return app
+
 
 def clear_and_fill_tables(app):
     from .models import CollectableItems, SettingsOperators, SettingsLevel  # Import models here
