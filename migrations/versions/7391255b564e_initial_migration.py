@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: a59b6ae432cb
+Revision ID: 7391255b564e
 Revises: 
-Create Date: 2024-05-20 16:40:35.661307
+Create Date: 2024-05-20 17:45:17.463458
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a59b6ae432cb'
+revision = '7391255b564e'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -41,7 +41,7 @@ def upgrade():
     sa.Column('username', sa.String(length=50), nullable=False),
     sa.Column('password', sa.String(length=100), nullable=False),
     sa.Column('settings_level_id', sa.Integer(), nullable=True),
-    sa.Column('created', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
+    sa.Column('created', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['settings_level_id'], ['settings_level.id'], name=op.f('fk_user_settings_level_id_settings_level')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_user')),
     sa.UniqueConstraint('username', name=op.f('uq_user_username'))
@@ -49,7 +49,7 @@ def upgrade():
     op.create_table('answers',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
-    sa.Column('created', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
+    sa.Column('created', sa.DateTime(), nullable=False),
     sa.Column('problem', sa.String(length=50), nullable=False),
     sa.Column('user_answer', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['user.id'], name=op.f('fk_answers_author_id_user')),
@@ -58,7 +58,7 @@ def upgrade():
     op.create_table('post',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
-    sa.Column('created', sa.TIMESTAMP(), server_default='CURRENT_TIMESTAMP', nullable=False),
+    sa.Column('created', sa.DateTime(), nullable=False),
     sa.Column('title', sa.String(length=130), nullable=False),
     sa.Column('body', sa.String(length=1200), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['user.id'], name=op.f('fk_post_author_id_user')),

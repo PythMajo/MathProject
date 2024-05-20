@@ -95,8 +95,6 @@ def run_migrations_online():
         conf_args["process_revision_directives"] = process_revision_directives
 
     connectable = get_engine()
-    if "compare_type" in conf_args:
-        conf_args["compare_type"] = True
 
     with connectable.connect() as connection:
         context.configure(
