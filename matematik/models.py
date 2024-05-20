@@ -9,7 +9,7 @@ class Post(db.Model):
     __tablename__ = 'post'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    created = Column(TIMESTAMP, nullable=False, server_default='CURRENT_TIMESTAMP')
+    created = Column(db.DateTime, nullable=False, default=datetime.utcnow)
     title = Column(db.String(130), nullable=False)
     body = Column(db.String(1200), nullable=False)
 
@@ -18,7 +18,9 @@ class Answer(db.Model):
     __tablename__ = 'answers'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    created = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
+    #created = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
+    created = Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
     problem = Column(db.String(50), nullable=False)
     user_answer = Column(Boolean, nullable=False)
 
@@ -58,7 +60,8 @@ class User(db.Model):
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
     collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
     settings_level_id = db.Column(db.Integer, db.ForeignKey('settings_level.id'))
-    created = Column(TIMESTAMP, nullable=True, server_default=func.current_timestamp())
+#    created = Column(TIMESTAMP, nullable=True, server_default=func.current_timestamp())
+    created = Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 
 # Define SettingsOperators class
