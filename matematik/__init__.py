@@ -18,6 +18,8 @@ convention = {
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
 migrate = Migrate(compare_type=True)
 
+import logging
+logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 def create_app(test_config=None):
     # Create and configure the app
@@ -37,7 +39,7 @@ def create_app(test_config=None):
     else:
         # Load the test config if passed in
         app.config.from_mapping(test_config)
-
+    logging.info(f'App started, configname: {config_name}')
     db.init_app(app)  # Initialize db with the Flask app instance
     migrate.init_app(app, db, render_as_batch=True)  # Initialize Flask-Migrate with the app and db
 
