@@ -95,19 +95,13 @@ def run_migrations_online():
         conf_args["process_revision_directives"] = process_revision_directives
 
     connectable = get_engine()
-
-    # Ensure compare_type is not present in conf_args
-    conf_args.pop("compare_type", True)
-    #if "compare_type" in conf_args:
-    #    conf_args["compare_type"] = True
+    if "compare_type" in conf_args:
+        conf_args["compare_type"] = True
 
     with connectable.connect() as connection:
-
         context.configure(
-
             connection=connection,
             target_metadata=get_metadata(),
-            compare_type = True,
             **conf_args
         )
 

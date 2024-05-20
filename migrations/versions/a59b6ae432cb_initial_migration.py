@@ -1,8 +1,8 @@
 """Initial migration
 
-Revision ID: 4393adefb2c6
+Revision ID: a59b6ae432cb
 Revises: 
-Create Date: 2024-05-20 07:19:29.371033
+Create Date: 2024-05-20 16:40:35.661307
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4393adefb2c6'
+revision = 'a59b6ae432cb'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,24 +21,25 @@ def upgrade():
     op.create_table('collectable_items',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('fa_code', sa.String(length=100), nullable=True),
-    sa.Column('color', sa.String(length=100), nullable=True),
+    sa.Column('color', sa.String(length=50), nullable=True),
+    sa.Column('test', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_collectable_items'))
     )
     op.create_table('settings_level',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=True),
+    sa.Column('name', sa.String(length=120), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_settings_level'))
     )
     op.create_table('settings_operators',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=True),
+    sa.Column('name', sa.String(length=120), nullable=True),
     sa.Column('operator', sa.String(length=2), nullable=True),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_settings_operators'))
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
-    sa.Column('password', sa.String(), nullable=False),
+    sa.Column('password', sa.String(length=100), nullable=False),
     sa.Column('settings_level_id', sa.Integer(), nullable=True),
     sa.Column('created', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['settings_level_id'], ['settings_level.id'], name=op.f('fk_user_settings_level_id_settings_level')),
@@ -49,7 +50,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.TIMESTAMP(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=False),
-    sa.Column('problem', sa.String(), nullable=False),
+    sa.Column('problem', sa.String(length=50), nullable=False),
     sa.Column('user_answer', sa.Boolean(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['user.id'], name=op.f('fk_answers_author_id_user')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_answers'))
@@ -58,8 +59,8 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.Column('created', sa.TIMESTAMP(), server_default='CURRENT_TIMESTAMP', nullable=False),
-    sa.Column('title', sa.String(), nullable=False),
-    sa.Column('body', sa.String(), nullable=False),
+    sa.Column('title', sa.String(length=130), nullable=False),
+    sa.Column('body', sa.String(length=1200), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['user.id'], name=op.f('fk_post_author_id_user')),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_post'))
     )
