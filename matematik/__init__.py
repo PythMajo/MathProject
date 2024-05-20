@@ -1,9 +1,10 @@
 from flask import Flask
 from pathlib import Path
-
+import os
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 
+#from .models import CollectableItems, SettingsOperators, SettingsLevel  # Ensure models are imported
 
 from sqlalchemy import MetaData
 
@@ -28,15 +29,17 @@ def create_app(test_config=None):
     instance_path = Path(app.instance_path)
     instance_path.mkdir(parents=True, exist_ok=True)
 
-    # Set up database URI
-    db_uri = 'sqlite:///' + str(instance_path / 'flaskr.sqlite')
+    if test_config is None:
+        # Load the instance config, if it exists, when not testing
+        config_name = os.getenv('FLASK_ENV', 'development')
+        if config_name == 'production':
+            app.config.from_object('config.ProductionConfig')
+        else:
+            app.config.from_object('config.DevelopmentConfig')
+    else:
+        # Load the test config if passed in
+        app.config.from_mapping(test_config)
 
-    # Configure the app
-    app.config.from_mapping(
-        SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI=db_uri,
-        SQLALCHEMY_TRACK_MODIFICATIONS=False,  # Disable modification tracking
-    )
     db.init_app(app)  # Initialize db with the Flask app instance
     migrate.init_app(app, db, render_as_batch=True)  # Initialize Flask-Migrate with the app and db
 
