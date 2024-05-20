@@ -10,8 +10,8 @@ class Post(db.Model):
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     created = Column(TIMESTAMP, nullable=False, server_default='CURRENT_TIMESTAMP')
-    title = Column(String, nullable=False)
-    body = Column(String, nullable=False)
+    title = Column(db.String(130), nullable=False)
+    body = Column(db.String(1200), nullable=False)
 
 
 class Answer(db.Model):
@@ -19,7 +19,7 @@ class Answer(db.Model):
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     created = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
-    problem = Column(String, nullable=False)
+    problem = Column(String(40), nullable=False)
     user_answer = Column(Boolean, nullable=False)
 
 
@@ -51,8 +51,8 @@ users_collectable_items = db.Table(
 class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(Integer, primary_key=True)
-    username = db.Column(String(50), unique=True, nullable=False)
-    password = db.Column(String, nullable=False)
+    username = db.Column(db.String(50), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
@@ -65,8 +65,8 @@ class User(db.Model):
 class SettingsOperators(db.Model):
     __tablename__ = 'settings_operators'
     id = db.Column(Integer, primary_key=True)
-    name = db.Column(String(100))
-    operator = db.Column(String(2))
+    name = db.Column(db.String(120))
+    operator = db.Column(db.String(2))
 
     def __str__(self):
         return self.name
@@ -75,7 +75,7 @@ class SettingsOperators(db.Model):
 class SettingsLevel(db.Model):
     __tablename__ = 'settings_level'
     id = db.Column(Integer, primary_key=True)
-    name = db.Column(String(100))
+    name = db.Column(db.String(120))
 
     def __str__(self):
         return self.name
@@ -84,6 +84,7 @@ class SettingsLevel(db.Model):
 class CollectableItems(db.Model):
     __tablename__ = 'collectable_items'
     id = db.Column(Integer, primary_key=True)
-    fa_code = db.Column(String(100))
-    color = db.Column(String(100))
+    fa_code = db.Column(db.String(100))
+    color = db.Column(db.String(50))
+    test= db.Column(Integer)
 

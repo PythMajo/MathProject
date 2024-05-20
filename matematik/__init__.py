@@ -19,7 +19,7 @@ convention = {
 
 #db = SQLAlchemy()
 db = SQLAlchemy(metadata=MetaData(naming_convention=convention))
-migrate = Migrate()
+migrate = Migrate(compare_type=True)
 
 def create_app(test_config=None):
     # Create and configure the app
