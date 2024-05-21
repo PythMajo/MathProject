@@ -59,13 +59,14 @@ def webhook():
 
         # Debugging: Print all headers
         logging.info(f"Request headers: {request.headers}")
+        logging.info(f"Request data: {request.data}")
 
         if request.is_json:
             payload_body = request.get_json()
-            payload_body_raw = request.body
+            payload_body_raw = request.data
         else:
-            payload_body = request.body
-            payload_body_raw = request.body
+            payload_body = request.data
+            payload_body_raw = request.data
         # Check for empty payload
         if not payload_body:
             logging.info("Payload body is empty!")
