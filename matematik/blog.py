@@ -10,7 +10,7 @@ import hmac
 import hashlib
 
 bp = Blueprint('blog', __name__)
-# test4
+# test23
 import logging
 logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -56,6 +56,21 @@ def verify_signature(payload_body, secret_token, signature_header):
 @bp.route('/update_server', methods=['POST'])
 def webhook():
     if request.method == 'POST':
+
+        # Debugging: Print all headers
+        logging.debug(f"Request headers: {request.headers}")
+
+        if request.is_json:
+            payload_body = request.get_json()
+            payload_body_raw = request.data
+        else:
+            payload_body = request.data
+            payload_body_raw = request.data
+        # Check for empty payload
+        if not payload_body:
+            logging.debug("Payload body is empty!")
+            abort(403, description="Payload body is empty!")
+
         payload_body = request.data
         logging.info(f"Data: {payload_body}")
         signature_header = request.headers.get('X-Hub-Signature-256')
