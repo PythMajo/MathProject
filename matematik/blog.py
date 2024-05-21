@@ -68,7 +68,7 @@ def webhook():
             payload_body_raw = request.data
         # Check for empty payload
         if not payload_body:
-            logging.debug("Payload body is empty!")
+            logging.info("Payload body is empty!")
             abort(403, description="Payload body is empty!")
 
         payload_body = request.data
