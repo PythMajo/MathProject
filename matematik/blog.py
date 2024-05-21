@@ -62,16 +62,16 @@ def webhook():
 
         if request.is_json:
             payload_body = request.get_json()
-            payload_body_raw = request.data
+            payload_body_raw = request.body
         else:
-            payload_body = request.data
-            payload_body_raw = request.data
+            payload_body = request.body
+            payload_body_raw = request.body
         # Check for empty payload
         if not payload_body:
             logging.info("Payload body is empty!")
             abort(403, description="Payload body is empty!")
 
-        payload_body = request.data
+
         logging.info(f"Data: {payload_body}")
         signature_header = request.headers.get('X-Hub-Signature-256')
         load_dotenv()
