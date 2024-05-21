@@ -10,7 +10,7 @@ import hmac
 import hashlib
 
 bp = Blueprint('blog', __name__)
-# test233
+# test2331
 import logging
 logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -68,7 +68,7 @@ def webhook():
             payload_body_raw = request.data
         # Check for empty payload
         if not payload_body:
-            logging.debug("Payload body is empty!")
+            logging.info("Payload body is empty!")
             abort(403, description="Payload body is empty!")
 
         payload_body = request.data
