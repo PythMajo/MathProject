@@ -57,6 +57,7 @@ def verify_signature(payload_body, secret_token, signature_header):
 def webhook():
     if request.method == 'POST':
         payload_body = request.data
+        logging.info(f"Data: {payload_body}")
         signature_header = request.headers.get('X-Hub-Signature-256')
         load_dotenv()
         WEBHOOK_SECRET = os.getenv('w_secret')
