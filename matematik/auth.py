@@ -7,6 +7,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from matematik.models import User, SettingsOperators
 from matematik import db
 
+import logging
+logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+
+
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
@@ -48,7 +52,7 @@ def login():
         password = request.form['password']
         error = None
         user = User.query.filter_by(username=username).first()
-
+        logging.info(f'User: {user}')
         if user is None:
             error = 'Incorrect username.'
         elif not check_password_hash(user.password, password):
