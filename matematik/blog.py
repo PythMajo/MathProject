@@ -10,7 +10,7 @@ import hmac
 import hashlib
 
 bp = Blueprint('blog', __name__)
-# test23
+# test233
 import logging
 logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
@@ -58,7 +58,7 @@ def webhook():
     if request.method == 'POST':
 
         # Debugging: Print all headers
-        logging.debug(f"Request headers: {request.headers}")
+        logging.info(f"Request headers: {request.headers}")
 
         if request.is_json:
             payload_body = request.get_json()
