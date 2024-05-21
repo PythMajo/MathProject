@@ -6,7 +6,7 @@ from werkzeug.exceptions import abort
 from matematik.auth import login_required
 import git
 import os
-# test
+
 
 bp = Blueprint('blog', __name__)
 
