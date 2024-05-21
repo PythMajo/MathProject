@@ -58,7 +58,7 @@ def webhook():
     if request.method == 'POST':
 
         # Debugging: Print all headers
-        logging.debug(f"Request headers: {request.headers}")
+        logging.info(f"Request headers: {request.headers}")
 
         if request.is_json:
             payload_body = request.get_json()
