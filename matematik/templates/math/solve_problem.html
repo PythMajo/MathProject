@@ -6,32 +6,23 @@
 
 {% block content %}
 
+<progress class="progress is-warning" value="{{ correct_answers }}" max="10">{{ correct_answers }}</progress>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="notification is-{{ category }}">
-                    {{ message }} 
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
+
+
     <h1 class="title">Løs opgaven</h1>
 
 
     <div class="columns">
       <div class="column">
-    <p class="has-text-weight-bold">Hvad er {{ math_problem.num1 }} {{ math_problem.operator }} {{ math_problem.num2 }}?</p>
+    <p class="has-text-weight-bold">Hvad er {{ math_problem }}?</p>
     <form action="{{ url_for('math.solve_problem') }}" method="post">
-        <input type="hidden" name="num1" value="{{ math_problem.num1 }}">
-        <input type="hidden" name="num2" value="{{ math_problem.num2 }}">
-        <input type="hidden" name="operator" value="{{ math_problem.operator }}">
-        <input type="hidden" name="answer" value="{{ math_problem.answer }}">
+        <input type="hidden" name="expression" value="{{ math_problem }}">
+
 
         <div class="field has-addons">
             <div class="control">
-              <input class="input" type="number" placeholder="" name="user_answer" required>
+              <input  class="input" type="number submit" placeholder="" autofocus="autofocus" name="user_answer" required>
             </div>
             <div class="control">
               <button class="button is-info" type="submit">
@@ -44,7 +35,15 @@
   </div>
 
   <div class="column">
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="notification is-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
   </div>
 </div>
 
@@ -57,7 +56,7 @@
             notifications.forEach(function (notification) {
                 setTimeout(function () {
                     notification.style.display = 'none';
-                }, 2000); // 2000 milliseconds = 2 seconds
+                }, 3000); // 2000 milliseconds = 2 seconds
             });
         });
     </script>

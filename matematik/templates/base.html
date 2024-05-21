@@ -2,82 +2,112 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{% block title %}{% endblock %} - matematik</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+<script src="https://kit.fontawesome.com/691f34d46d.js" crossorigin="anonymous"></script>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
 
-      <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
+        <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
     </div>
-  
+
     <div id="navbarBasicExample" class="navbar-menu">
-      <div class="navbar-start">
-        <a class="navbar-item" href="{{ url_for('math.my_stat') }}">
-            My Stats
-          </a>
-  
-          <a class="navbar-item" href="{{ url_for('math.solve_problem') }}">
-            Solve problems
-          </a>
-      </div>
-  
-      <div class="navbar-end">
-        <div class="navbar-item">
-          <div class="buttons">
-            {% if g.user %}
+        <div class="navbar-start">
+            <a class="navbar-item" href="{{ url_for('math.my_stat') }}">
 
-            <span class="navbar-item">{{ g.user['username'] }}</span>
-            <a href="{{ url_for('auth.logout') }}" class="button is-danger">Log Out</a>
-            {% else %}
-            <a href="{{ url_for('auth.register') }}" class="button is-primary">Register</a>
-            <a href="{{ url_for('auth.login') }}" class="button is-light">Log In</a>
-            {% endif %}
-          </div>
+                            <span class="icon">
+                    <i class="fas fa-bar-chart"></i>
+                </span>
+                <span>My Stats</span>
+            </a>
+
+            <a class="navbar-item" href="{{ url_for('math.solve_problem') }}">
+
+                <span class="icon">
+                    <i class="fas fa-tasks"></i>
+                </span>
+                <span>Solve problems</span>
+            </a>
+
+            <a class="navbar-item" href="{{ url_for('math.user_settings') }}">
+                <span class="icon">
+                    <i class="fas fa-wrench"></i>
+                </span>
+                <span>Settings</span>
+
+            </a>
+
+            <a class="navbar-item" href="{{ url_for('math.my_collection') }}">
+                <span class="icon">
+                    <i class="fas fa-book"></i>
+                </span>
+                <span>Collection</span>
+
+            </a>
+
         </div>
-      </div>
+
+        <div class="navbar-end">
+            <div class="navbar-item">
+                <div class="buttons">
+                    {% if g.user %}
+
+                        <span class="navbar-item">
+
+                            <span class="icon">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <span>{{ g.user['username'] }}</span>
+                        </span>
+                        <a href="{{ url_for('auth.logout') }}" class="button is-danger">Log Out</a>
+                    {% else %}
+                        <a href="{{ url_for('auth.register') }}" class="button is-primary">Register</a>
+                        <a href="{{ url_for('auth.login') }}" class="button is-light">Log In</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-  </nav>
+</nav>
 
 
-
-  <script>
+<script>
     document.addEventListener('DOMContentLoaded', () => {
-  
-      // Get all "navbar-burger" elements
-      const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
-  
-      // Check if there are any navbar burgers
-      if ($navbarBurgers.length > 0) {
-  
-        // Add a click event on each of them
-        $navbarBurgers.forEach( el => {
-          el.addEventListener('click', () => {
-  
-            // Get the target from the "data-target" attribute
-            const target = el.dataset.target;
-            const $target = document.getElementById(target);
-  
-            // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-            el.classList.toggle('is-active');
-            $target.classList.toggle('is-active');
-  
-          });
-        });
-      }
-  
+
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
+
+            // Add a click event on each of them
+            $navbarBurgers.forEach(el => {
+                el.addEventListener('click', () => {
+
+                    // Get the target from the "data-target" attribute
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+
+                    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
+
+                });
+            });
+        }
+
     });
-  </script>
+</script>
 
 
 <div class="container is-max-desktop">
-   
-        
 
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %}
-  {% block content %}{% endblock %}
+
+    {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
 </div>

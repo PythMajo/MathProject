@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+
+
+
+    <div class="column is-one-third">
+
+        {% for item in my_collection %}
+            <span class="icon is-large is-boxed box is-rounded" style="border-radius: 0;">
+
+        <i class="{{ item.fa_code }} fa-2x" style="color: {{ item.color  }}"> </i>
+    </span>
+        {% endfor %}
+
+    </div>
+    <div class="column is-auto"></div>
+
+{% endblock %}
