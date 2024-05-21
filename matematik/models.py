@@ -54,7 +54,7 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(400), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
