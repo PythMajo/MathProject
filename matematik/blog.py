@@ -5,6 +5,7 @@ from werkzeug.exceptions import abort
 
 from matematik.auth import login_required
 import git
+import os
 
 
 bp = Blueprint('blog', __name__)
@@ -13,8 +14,9 @@ bp = Blueprint('blog', __name__)
 @bp.route('/update_server', methods=('POST'))
 def webhook():
     if request.method == 'POST':
-        repo = git.Repo('path/to/git_repo')
-        origin = repo.remotes.originorigin.pull()
+        repo = git.Repo( os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))  # Update the path to one folder above
+        origin = repo.remotes.origin
+        origin.pull()
         return 'Updated PythonAnywhere successfully', 200
     else:
         return 'Wrong event type', 400
