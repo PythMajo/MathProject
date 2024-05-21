@@ -18,8 +18,6 @@ def is_valid_signature(x_hub_signature, data, private_key):
     # x_hub_signature and data are from the webhook payload
     # private key is your webhook secret
 
-
-
     hash_algorithm, github_signature = x_hub_signature.split('=', 1)
     algorithm = hashlib.__dict__.get(hash_algorithm)
     encoded_key = bytes(private_key, 'latin-1')
@@ -30,7 +28,7 @@ def is_valid_signature(x_hub_signature, data, private_key):
 @bp.route('/update_server', methods=['POST'])
 def webhook():
     if request.method == 'POST':
-        x_hub_signature = request.headers.get('X - Hub - Signature')
+        x_hub_signature = request.headers.get('X-Hub-Signature')
 
         load_dotenv()
         w_secret = os.getenv('w_secret')
