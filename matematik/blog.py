@@ -10,7 +10,7 @@ import hmac
 import hashlib
 
 bp = Blueprint('blog', __name__)
-# test233122
+# test2331225
 import logging
 logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
