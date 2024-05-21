@@ -37,6 +37,7 @@ def create_app(test_config=None):
 
         if config_name == 'production':
             app.config.from_object('config.ProductionConfig')
+            app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
         else:
             app.config.from_object('config.DevelopmentConfig')
     else:
