@@ -43,7 +43,6 @@ users_settings_operators = db.Table(
 
 users_collectable_items = db.Table(
     'users_collectable_items',
-    #db.Column('id', db.Integer, primary_key=True, autoincrement=True),
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('collectable_items_id', db.Integer, db.ForeignKey('collectable_items.id')),
     db.Column('timestamp', db.DateTime, default=datetime.utcnow, nullable=False)
@@ -60,7 +59,6 @@ class User(db.Model):
     settings_operators = db.relationship("SettingsOperators", secondary=users_settings_operators, backref="users")
     collection = db.relationship("CollectableItems", secondary=users_collectable_items, backref="users")
     settings_level_id = db.Column(db.Integer, db.ForeignKey('settings_level.id'))
-#    created = Column(TIMESTAMP, nullable=True, server_default=func.current_timestamp())
     created = Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
 

@@ -28,6 +28,8 @@ def register():
         elif User.query.filter_by(username=username).first() is not None:
             error = f"User {username} is already registered."
 
+
+        # todo: flyt password hashing til modelen
         if error is None:
             new_user = User(username=username, password=generate_password_hash(password), settings_level_id=1)
             db.session.add(new_user)
