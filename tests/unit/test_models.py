@@ -9,5 +9,5 @@ def test_new_user_with_fixture(new_user):
     """
 
     assert new_user.username == 'test_user'
-    assert new_user.password != 'password'
+    assert new_user.check_password('password')
     assert new_user.settings_level_id == 1

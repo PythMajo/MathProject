@@ -1,13 +1,13 @@
 import pytest
 from matematik import create_app, db
 from matematik.models import User
-from werkzeug.security import check_password_hash, generate_password_hash
+
 
 
 @pytest.fixture(scope='module')
 def new_user():
     password = 'password'
-    user = User(username='test_user', password=generate_password_hash(password), settings_level_id=1)
+    user = User(username='test_user', password=password, settings_level_id=1)
     return user
 
 
