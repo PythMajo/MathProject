@@ -1,5 +1,6 @@
-from matematik import create_app
+from matematik import create_app, db
 import pytest
+from flask import url_for
 
 
 def test_home_page_with_fixture(test_client):

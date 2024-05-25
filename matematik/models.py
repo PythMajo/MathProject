@@ -19,7 +19,6 @@ class Answer(db.Model):
     __tablename__ = 'answers'
     id = Column(Integer, primary_key=True)
     author_id = Column(Integer, ForeignKey('user.id'), nullable=False)
-    #created = Column(TIMESTAMP, nullable=False, server_default=func.current_timestamp())
     created = Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     problem = Column(db.String(50), nullable=False)

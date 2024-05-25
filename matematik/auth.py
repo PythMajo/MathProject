@@ -29,9 +29,9 @@ def register():
             error = f"User {username} is already registered."
 
 
-        # todo: flyt password hashing til modelen
+
         if error is None:
-            new_user = User(username=username, password=generate_password_hash(password), settings_level_id=1)
+            new_user = User(username=username, password=password, settings_level_id=1)
             db.session.add(new_user)
             db.session.commit()
 
@@ -57,7 +57,7 @@ def login():
         logging.info(f'User: {user}')
         if user is None:
             error = 'Incorrect username.'
-        elif not check_password_hash(user.password, password):
+        elif not user.check_password(password):
             error = 'Incorrect password.'
 
         if error is None:
