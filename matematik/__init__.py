@@ -56,10 +56,11 @@ def create_app(test_config=None):
 
     from matematik.models import User  # Import User model
     # Import and register blueprints
-    from . import auth, math, blog
+    from . import auth, math, blog, reading
     app.register_blueprint(auth.bp)
     app.register_blueprint(math.bp)
     app.register_blueprint(blog.bp)
+    app.register_blueprint(reading.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Register custom CLI command
