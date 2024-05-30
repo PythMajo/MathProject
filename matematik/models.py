@@ -53,6 +53,7 @@ class User(db.Model):
     __tablename__ = 'user'
     id = db.Column(Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
+    tagline = db.Column(db.String(500), unique=True, nullable=True)
     _password = db.Column(db.String(400), nullable=False)
     posts = db.relationship('Post', backref='author', lazy=True)
     answers = db.relationship('Answer', backref='author', lazy=True)
