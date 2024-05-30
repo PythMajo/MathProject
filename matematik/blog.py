@@ -8,6 +8,7 @@ import git
 import os
 import hmac
 import hashlib
+from flask_migrate import upgrade
 
 bp = Blueprint('blog', __name__)
 
@@ -68,9 +69,17 @@ def webhook():
         try:
             if verify_signature(payload_body, WEBHOOK_SECRET, signature_header):
                 # Process the valid payload
-                repo = git.Repo(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..'))  # Update the path to one folder above
+                repo = git.Repo(os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                                             '..'))  # Update the path to one folder above
                 origin = repo.remotes.origin
                 origin.pull()
+
+                # Apply database migrations
+                with bp.app_context():
+                    upgrade()
+
+                return "Payload verified and processed, database upgraded", 200
+
                 return "Payload verified and processed", 200
 
         except Exception as e:
