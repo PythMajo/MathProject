@@ -33,27 +33,21 @@ def create_app(test_config=None):
     load_dotenv()
 
     config_name = os.getenv('FLASK_ENV')
-    if test_config is None:
 
+    if test_config:
+        app.config.from_object('config.TestConfig')
+    else:
+        config_name = os.getenv('FLASK_ENV')
         if config_name == 'production':
             app.config.from_object('config.ProductionConfig')
-            app.config["SQLALCHEMY_POOL_RECYCLE"] = 299
         else:
             app.config.from_object('config.DevelopmentConfig')
-    else:
-        # Load the test config if passed in
-        app.config.from_mapping(test_config)
 
-    logging.info(f'App started, configname: {config_name}')
+
     db.init_app(app)  # Initialize db with the Flask app instance
     migrate.init_app(app, db, render_as_batch=True)  # Initialize Flask-Migrate with the app and db
 
-    if test_config is not None:
-        # Load the test config if passed in
-        app.config.from_mapping(test_config)
-    else:
-        # Load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
+
 
     # Ensure the instance folder exists
     instance_path.mkdir(exist_ok=True)
@@ -62,10 +56,11 @@ def create_app(test_config=None):
 
     from matematik.models import User  # Import User model
     # Import and register blueprints
-    from . import auth, math, blog
+    from . import auth, math, blog, reading
     app.register_blueprint(auth.bp)
     app.register_blueprint(math.bp)
     app.register_blueprint(blog.bp)
+    app.register_blueprint(reading.bp)
     app.add_url_rule('/', endpoint='index')
 
     # Register custom CLI command

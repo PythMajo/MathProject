@@ -10,9 +10,6 @@ import hmac
 import hashlib
 
 bp = Blueprint('blog', __name__)
-# test233122567
-import logging
-logging.basicConfig(filename='example.log', level=logging.INFO, format='%(asctime)s %(levelname)s: %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
 
 
 def is_valid_signature(x_hub_signature, data, private_key):
@@ -21,7 +18,7 @@ def is_valid_signature(x_hub_signature, data, private_key):
     # private key is your webhook secret
 
     hash_algorithm, github_signature = x_hub_signature.split('=', 1)
-    logging.info(f'{github_signature}')
+
     algorithm = hashlib.__dict__.get(hash_algorithm)
     encoded_key = bytes(private_key, 'latin-1')
     mac = hmac.new(encoded_key, msg=data, digestmod=algorithm)
@@ -40,38 +37,30 @@ def verify_signature(payload_body, secret_token, signature_header):
     """
     if not signature_header:
         abort(403, description="x-hub-signature-256 header is missing!")
-    logging.info(f"Payload body: {payload_body}")
-    logging.info(f"Signature header: {signature_header}")
 
     hash_object = hmac.new(secret_token.encode('utf-8'), msg=payload_body, digestmod=hashlib.sha256)
     expected_signature = "sha256=" + hash_object.hexdigest()
 
-    logging.info(f"Expected signature: {expected_signature}")
+
 
     if not hmac.compare_digest(expected_signature, signature_header):
         abort(403, description="Request signatures didn't match!")
 
     return True
 
+
 @bp.route('/update_server', methods=['POST'])
 def webhook():
     if request.method == 'POST':
 
         # Debugging: Print all headers
-        logging.info(f"Request headers: {request.headers}")
-
 
         payload_body = request.get_data()
 
-        logging.info(f"Request data: {request.data}")
-
         # Check for empty payload
         if not payload_body:
-            logging.info("Payload body is empty!")
             abort(403, description="Payload body is empty!")
 
-
-        logging.info(f"Data: {payload_body}")
         signature_header = request.headers.get('X-Hub-Signature-256')
         load_dotenv()
         WEBHOOK_SECRET = os.getenv('w_secret')
@@ -91,7 +80,7 @@ def webhook():
 
 @bp.route('/')
 def index():
-    redirect('math.index')
+    return redirect(url_for('math.index'))
 
 
 

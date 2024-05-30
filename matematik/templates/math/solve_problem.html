@@ -22,17 +22,18 @@
 
         <div class="field has-addons">
             <div class="control">
-              <input  class="input" type="number submit" placeholder="" autofocus="autofocus" name="user_answer" required>
+                <input class="input" autocomplete="off" type="number submit" placeholder="" autofocus="autofocus"
+                       name="user_answer" required>
             </div>
             <div class="control">
-              <button class="button is-info" type="submit">
-                Svar
-              </button>
+                <button class="button is-info" type="submit">
+                    Svar
+                </button>
             </div>
-          </div>
+        </div>
     </form>
 
-  </div>
+      </div>
 
   <div class="column">
     {% with messages = get_flashed_messages(with_categories=true) %}
