@@ -80,8 +80,6 @@ def webhook():
 
                 return "Payload verified and processed, database upgraded", 200
 
-                return "Payload verified and processed", 200
-
         except Exception as e:
             abort(403, description=str(e))
 
