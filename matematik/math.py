@@ -51,6 +51,7 @@ def get_progress_for_user(user_id: int) -> int:
 
 
 def generate_expression(level: int, operators: list = ['+', '-', '*']) -> str:
+
     # Define difficulty settings based on the level
     if level == 1:  # Easy
         num_terms = 2

@@ -8,7 +8,7 @@ from matematik.models import User, SettingsOperators
 def app():
     app = create_app(test_config=True)
     with app.app_context():
-        yield app
+        yield app   
 
 
 @pytest.fixture(scope='module')
